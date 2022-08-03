@@ -1,2 +1,3 @@
-# Unity-Packages
-Este repositorio va a tener todos los packages que vaya creando para crear mis juegos
+# Sparse octree
+
+Un arbol de 8 hijos, este es sparse porque se va guardando memoria al tiempo que es necesario.
