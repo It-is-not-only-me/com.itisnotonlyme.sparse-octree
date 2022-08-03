@@ -33,12 +33,7 @@ public class OctreeBehaviour : MonoBehaviour
     {
         _octree.Clear();
         foreach (Punto punto in _valorAInsertar)
-        {
-            bool sePudoInsertar = _octree.Insertar(punto.transform.position, punto);
-
-            if (!sePudoInsertar)
-                Debug.Log("No se inserto");
-        }
+            _octree.Insertar(punto.transform.position, punto);
     }
 
     private void OnDrawGizmos()
@@ -54,34 +49,15 @@ public class OctreeBehaviour : MonoBehaviour
 
         ConseguirDimensiones visitor = new ConseguirDimensiones();
         _octree.Visitar(visitor);
-        
-        List<DatosDimensiones> datos = visitor.Datos;
-        List<Color> colores = ColoresPorProfunidad();
 
-        Gizmos.color = Color.white;
+        List<DatosDimensiones> datos = visitor.Datos;
 
         foreach (Punto punto in _valorAInsertar)
             Gizmos.DrawSphere(punto.transform.position, 0.1f);
 
         foreach (DatosDimensiones datosDimension in datos)
         {
-            //Gizmos.color = colores[datosDimension.Profundidad];
             Gizmos.DrawWireCube(datosDimension.Limites.center, datosDimension.Limites.size);
         }
-
-        Gizmos.color = Color.white;
-    }
-
-    private List<Color> ColoresPorProfunidad()
-    {
-        List<Color> colores = new List<Color>();
-
-        for (int i = 0; i <= _profundidad; i++)
-        {
-            float valor = 1 / (i + 1);
-            colores.Add(new Color(valor, valor, valor));
-        }
-
-        return colores;
     }
 }
