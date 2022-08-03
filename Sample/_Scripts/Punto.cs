@@ -10,6 +10,6 @@ public class Punto : MonoBehaviour, IComparable
         Punto otro = obj as Punto;
         if (otro._valor == _valor)
             return 0;
-        return otro._valor > _valor ? 1 : -1;
+        return _valor > otro._valor ? 1 : -1;
     }
 }

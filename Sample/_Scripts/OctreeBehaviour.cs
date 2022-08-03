@@ -50,12 +50,12 @@ public class OctreeBehaviour : MonoBehaviour
         ConseguirDimensiones visitor = new ConseguirDimensiones();
         _octree.Visitar(visitor);
 
-        List<DatosDimensiones> datos = visitor.Datos;
+        List<ConseguirDimensiones.DatosDimensiones> datos = visitor.Datos;
 
         foreach (Punto punto in _valorAInsertar)
             Gizmos.DrawSphere(punto.transform.position, 0.1f);
 
-        foreach (DatosDimensiones datosDimension in datos)
+        foreach (ConseguirDimensiones.DatosDimensiones datosDimension in datos)
         {
             Gizmos.DrawWireCube(datosDimension.Limites.center, datosDimension.Limites.size);
         }

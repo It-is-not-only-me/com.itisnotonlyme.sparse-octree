@@ -1,8 +1,15 @@
 ﻿using System.Collections.Generic;
 using ItIsNotOnlyMe.SparseOctree;
+using UnityEngine;
 
 public class ConseguirDimensiones : IVisitor<Punto>
 {
+    public struct DatosDimensiones
+    {
+        public Bounds Limites;
+        public int Profundidad;
+    }
+
     public List<DatosDimensiones> Datos => _datos;
 
     private List<DatosDimensiones> _datos;
