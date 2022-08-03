@@ -506,8 +506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eb36d5de024e0441a7f592f9dd6e21e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dimensiones: {x: 128, y: 128, z: 128}
-  _profundidad: 6
+  _dimensiones: {x: 10, y: 10, z: 10}
+  _profundidad: 3
   _valorAInsertar:
   - {fileID: 1632600822}
   - {fileID: 1821012612}

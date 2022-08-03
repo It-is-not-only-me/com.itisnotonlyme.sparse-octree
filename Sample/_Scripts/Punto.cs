@@ -7,6 +7,9 @@ public class Punto : MonoBehaviour, IComparable
 
     public int CompareTo(object obj)
     {
+        if (obj == null)
+            return 1;
+
         Punto otro = obj as Punto;
         if (otro._valor == _valor)
             return 0;

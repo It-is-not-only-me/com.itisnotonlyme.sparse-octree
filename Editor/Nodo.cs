@@ -43,58 +43,29 @@ namespace ItIsNotOnlyMe.SparseOctree
                 return true;
             }
 
-            if (EstaSubdividido() && !HayVariacion(valor))
+            if (!EstaSubdividido() || !SonIguales(valor))
             {
-                _valor = valor;
-                Juntar();
-                return true;
+                if (!EstaSubdividido())
+                    Subdividir();
+
+                Nodo<TTipo> nodoInsertar = NodoParaPosicion(posicion);
+                nodoInsertar.Insertar(posicion, valor, profundidadMaxima);
             }
 
-            if (!EstaSubdividido())
-                Subdividir();
+            if (SonIguales(valor))
+                Juntar(valor);            
 
-            Nodo<TTipo> nodoInsertar = NodoParaPosicion(posicion);
-            bool resultado = nodoInsertar.Insertar(posicion, valor, profundidadMaxima);
-
-            if (!HayVariacion(valor))
-            {
-                _valor = valor;
-                Juntar();
-            }
-
-            return resultado;
+            return true;
         }
 
         public bool Eliminar(Vector3 posicion, int profundidadMaxima)
         {
-            if (!PuntoContenido(posicion))
-                return false;
-
-            if (_profunidad >= profundidadMaxima)
-            {
-                _valor = _valorBase;
-                return true;
-            }
-
-            if (TieneMismoValor(_valorBase))
-                return true;
-            
-            if (!EstaSubdividido())
-                Subdividir();
-            
-            Nodo<TTipo> nodoParaEliminar = NodoParaPosicion(posicion);
-            bool resultado = nodoParaEliminar.Eliminar(posicion, profundidadMaxima);
-
-            if (!HayVariacion(_valorBase))
-                Juntar();
-
-            return resultado;
+            return Insertar(posicion, _valorBase, profundidadMaxima);
         }
 
         public void Clear()
         {
-            Juntar();
-            _valor = _valorBase;
+            Juntar(_valorBase);
         }
 
         public void Visitar(IVisitor<TTipo> visitor)
@@ -106,13 +77,19 @@ namespace ItIsNotOnlyMe.SparseOctree
 
         private Nodo<TTipo> NodoParaPosicion(Vector3 posicion)
         {
+            int indice = IndiceParaPosicion(posicion);
+            return _hijos[indice];
+        }
+
+        private int IndiceParaPosicion(Vector3 posicion)
+        {
             int indice = 0;
 
             for (int i = 2, potencia = 1; i >= 0; i--, potencia *= 2)
-                if (_posicion[i] + _dimensiones[i] / 2 < posicion[i])
+                if (_posicion[i] + _dimensiones[i] / 2 <= posicion[i])
                     indice += potencia;
 
-            return _hijos[indice];
+            return indice;
         }
 
         private void Subdividir()
@@ -138,26 +115,33 @@ namespace ItIsNotOnlyMe.SparseOctree
                     }
         }
 
-        private void Juntar()
+        private void Juntar(TTipo valor = default(TTipo))
         {
             _hijos.Clear();
+            _valor = valor;
         }
 
-        private bool HayVariacion(TTipo valor)
+        private bool SonIguales(TTipo valor = default(TTipo))
         {
-            return !_hijos.TrueForAll(nodo => TieneMismoValor(valor));
+            return _hijos.TrueForAll(nodo => nodo.TieneMismoValor(valor));
         }
 
         private bool TieneMismoValor(TTipo valor)
         {
-            return EstaSubdividido() ? false : _valor.CompareTo(valor) == 0;
+            if (EstaSubdividido())
+                return false;
+
+            if (_valor == null)
+                return valor == null;
+
+            return _valor.CompareTo(valor) == 0;
         }
 
         private bool PuntoContenido(Vector3 posicion)
         {
             bool contenido = true;
             for (int i = 0; i < 3; i++)
-                contenido &= _posicion[i] < posicion[i] && _posicion[i] + _dimensiones[i]  > posicion[i];
+                contenido &= _posicion[i] <= posicion[i] && _posicion[i] + _dimensiones[i] >= posicion[i];
             return contenido;
         }
     }
