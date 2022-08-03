@@ -1,0 +1,16 @@
+{
+    "name": "Demo-sparse-octree",
+    "rootNamespace": "",
+    "references": [
+        "GUID:62742021b2048ff4daaa02ea5c4d49d1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
