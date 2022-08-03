@@ -32,12 +32,12 @@ namespace ItIsNotOnlyMe.SparseOctree
 
         private bool EstaSubdividido() => _hijos.Count > 0;
 
-        public bool Insertar(Vector3 posicion, TTipo valor, int profunidadMaxima)
+        public bool Insertar(Vector3 posicion, TTipo valor, int profundidadMaxima)
         {
             if (!PuntoContenido(posicion))
                 return false;
 
-            if (profunidadMaxima >= _profunidad)
+            if (_profunidad >= profundidadMaxima)
             {
                 _valor = valor;
                 return true;
@@ -54,15 +54,23 @@ namespace ItIsNotOnlyMe.SparseOctree
                 Subdividir();
 
             Nodo<TTipo> nodoInsertar = NodoParaPosicion(posicion);
-            return nodoInsertar.Insertar(posicion, valor, profunidadMaxima);
+            bool resultado = nodoInsertar.Insertar(posicion, valor, profundidadMaxima);
+
+            if (!HayVariacion(valor))
+            {
+                _valor = valor;
+                Juntar();
+            }
+
+            return resultado;
         }
 
-        public bool Eliminar(Vector3 posicion, int profundiadMaxima)
+        public bool Eliminar(Vector3 posicion, int profundidadMaxima)
         {
             if (!PuntoContenido(posicion))
                 return false;
 
-            if (profundiadMaxima >= _profunidad)
+            if (_profunidad >= profundidadMaxima)
             {
                 _valor = _valorBase;
                 return true;
@@ -75,7 +83,7 @@ namespace ItIsNotOnlyMe.SparseOctree
                 Subdividir();
             
             Nodo<TTipo> nodoParaEliminar = NodoParaPosicion(posicion);
-            bool resultado = nodoParaEliminar.Eliminar(posicion, profundiadMaxima);
+            bool resultado = nodoParaEliminar.Eliminar(posicion, profundidadMaxima);
 
             if (!HayVariacion(_valorBase))
                 Juntar();
@@ -100,7 +108,7 @@ namespace ItIsNotOnlyMe.SparseOctree
         {
             int indice = 0;
 
-            for (int i = 2, potencia = 1; i >= 0; i++, potencia *= 2)
+            for (int i = 2, potencia = 1; i >= 0; i--, potencia *= 2)
                 if (_posicion[i] + _dimensiones[i] / 2 < posicion[i])
                     indice += potencia;
 
@@ -115,9 +123,9 @@ namespace ItIsNotOnlyMe.SparseOctree
                     for (int k = 0; k <= 1; k++)
                     {
                         Vector3 nuevaPosicion = new Vector3 (
-                            _posicion.x + _dimensiones.x * i,
-                            _posicion.y + _dimensiones.y * j,
-                            _posicion.z + _dimensiones.z * k
+                            _posicion.x + nuevaDimensiones.x * i,
+                            _posicion.y + nuevaDimensiones.y * j,
+                            _posicion.z + nuevaDimensiones.z * k
                         );
 
                         Nodo<TTipo> nuevoNodo = new Nodo<TTipo> (
