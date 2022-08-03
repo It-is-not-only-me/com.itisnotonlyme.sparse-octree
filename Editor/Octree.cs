@@ -26,5 +26,15 @@ namespace ItIsNotOnlyMe.SparseOctree
         {
             return _raiz.Eliminar(posicion, _profunidad);
         }
+
+        public void Clear()
+        {
+            _raiz.Clear();
+        }
+
+        public void Visitar(IVisitor<TTipo> visitor)
+        {
+            _raiz.Visitar(visitor);
+        }
     }
 }

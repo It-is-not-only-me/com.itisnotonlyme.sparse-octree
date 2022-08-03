@@ -24,9 +24,11 @@ namespace ItIsNotOnlyMe.SparseOctree
             _valor = valor;
         }
 
-        public Bounds Region => new Bounds(_posicion + _dimensiones / 2, _dimensiones / 2);
+        public Bounds Region => new Bounds(_posicion + _dimensiones / 2, _dimensiones);
 
         public int Profundidad => _profunidad;
+
+        public TTipo Valor => _valor;
 
         private bool EstaSubdividido() => _hijos.Count > 0;
 
@@ -81,6 +83,19 @@ namespace ItIsNotOnlyMe.SparseOctree
             return resultado;
         }
 
+        public void Clear()
+        {
+            Juntar();
+            _valor = _valorBase;
+        }
+
+        public void Visitar(IVisitor<TTipo> visitor)
+        {
+            visitor.Visitar(this);
+            foreach (Nodo<TTipo> nodo in _hijos)
+                nodo.Visitar(visitor);
+        }
+
         private Nodo<TTipo> NodoParaPosicion(Vector3 posicion)
         {
             int indice = 0;
@@ -99,14 +114,19 @@ namespace ItIsNotOnlyMe.SparseOctree
                 for (int j = 0; j <= 1; j++)
                     for (int k = 0; k <= 1; k++)
                     {
-                        Vector3 nuevaPosicion = new Vector3
-                            (
+                        Vector3 nuevaPosicion = new Vector3 (
                             _posicion.x + _dimensiones.x * i,
                             _posicion.y + _dimensiones.y * j,
                             _posicion.z + _dimensiones.z * k
-                            );
+                        );
 
-                        _hijos.Add(new Nodo<TTipo>(nuevaPosicion, nuevaDimensiones, _profunidad + 1, _valor));
+                        Nodo<TTipo> nuevoNodo = new Nodo<TTipo> (
+                            nuevaPosicion, 
+                            nuevaDimensiones, 
+                            _profunidad + 1, 
+                            _valor
+                        );
+                        _hijos.Add(nuevoNodo);
                     }
         }
 
@@ -122,7 +142,7 @@ namespace ItIsNotOnlyMe.SparseOctree
 
         private bool TieneMismoValor(TTipo valor)
         {
-            return EstaSubdividido() ? false : _valor.Equals(valor);
+            return EstaSubdividido() ? false : _valor.CompareTo(valor) == 0;
         }
 
         private bool PuntoContenido(Vector3 posicion)
