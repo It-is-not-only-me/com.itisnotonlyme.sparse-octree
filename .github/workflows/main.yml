@@ -1,0 +1,20 @@
+name: unity-test
+on: [push]
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+        
+      - name: Cache
+        uses: actions/cache@v3.0.7
+
+      - name: Unity - Test runner
+        uses: game-ci/unity-test-runner@v2.0.3
+
+      - name: Unity - Builder
+        uses: game-ci/unity-builder@v2.1.0
+
+
+
